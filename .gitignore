@@ -1,0 +1,7 @@
+# ignore the datasets
+**/*.h5
+
+# ignore the file systems
+/.idea
+/.ipynb_checkpoints
+**/__pycache__
