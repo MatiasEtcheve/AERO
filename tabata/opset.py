@@ -116,11 +116,11 @@ class Opset:
             if (pos < 0) or (pos >= nbmax):
                 pos = 0
             if nbmax > 0:
-                self.df = store[self.records[pos]]
-                colname = get_colname(self.df.columns, name)
-                phase = get_colname(self.df.columns, phase, default=None)
+                self._df = store[self.records[pos]]
+                colname = get_colname(self._df.columns, name)
+                phase = get_colname(self._df.columns, phase, default=None)
             else:
-                self.df = None
+                self._df = None
                 colname = None
                 phase = None
 
@@ -129,6 +129,12 @@ class Opset:
         self.phase = phase
 
         self._tmppos = 0  # Variable cachée pour l'itération.
+
+    @property
+    def df(self):
+        if self.records[self.sigpos] != "/" + self._df.index.name:
+            self._df = pd.read_hdf(self.storename, self.records[self.sigpos])
+        return self._df
 
     def __repr__(self):
         """Affichage du nom de l'Opset et de la liste des instants selectionnés."""
@@ -171,8 +177,6 @@ class Opset:
 
         if pos != self.sigpos:
             self.sigpos = pos
-            rec = self.records[pos]
-            self.df = pd.read_hdf(self.storename, rec)
 
         return self.df
 
@@ -266,7 +270,6 @@ class Opset:
             df.index.name = record
 
         # Enregistrement du DataFrame.
-        self.df = df
         df.to_hdf(self.storename, record)
 
         # Si l'Opset était vide maintenant il faut spécifier une variable.
@@ -327,7 +330,6 @@ class Opset:
             self.sigpos = pos
         # On relit systématiquement le fichier au début au cas où une nouvelle colonne
         # serait ajoutée.
-        self.df = pd.read_hdf(self.storename, self.records[self.sigpos])
 
         if name is not None:
             self.colname = get_colname(self.df.columns, name)
@@ -347,7 +349,7 @@ class Opset:
                 go.Scatter(
                     x=self.df.index,
                     y=self.df[self.colname],
-                    name=f"phase",
+                    name="phase",
                     mode="markers",
                     hovertemplate="<i>Phase</i>: %{text}"
                     + f"<br><b>{self.colname}</b>: "
@@ -379,7 +381,6 @@ class Opset:
             # Pour éviter de relire deux fois le signal initial.
             if sigpos != self.sigpos:
                 self.sigpos = sigpos
-                self.df = pd.read_hdf(self.storename, self.records[sigpos])
 
             # Mise à jour des courbes.
             f.update_traces(
@@ -394,6 +395,12 @@ class Opset:
                     y=self.df[self.colname],
                     marker_color=colors,
                     mode="markers",
+                    hovertemplate="<i>Phase</i>: %{text}"
+                    + f"<br><b>{self.colname}</b>: "
+                    + "%{y}<br>"
+                    + f"<br><b>Timestamp</b>: "
+                    + "%{x}<br>",
+                    text=self.df[self.phase],
                 )
             # Mise à jour des titres et labels.
             f.update_layout(

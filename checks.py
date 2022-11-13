@@ -171,3 +171,15 @@ def health_check(ds: Opset):
                 problematic_records[str(check)].append(df.index.name)
     ds.rewind()
     return problematic_records
+
+
+def remove_problematic_records(ds: Opset):
+    """Performs a health check on the dataset
+
+    Args:
+        ds (Opset): dataset composed of DataFrames to check
+    """
+    dict_problematic_records = health_check(ds)
+    set_problematic_records = set(sum(dict_problematic_records.values(), []))
+    for problematic_record in set_problematic_records:
+        ds.records.remove("/" + problematic_record)

@@ -3,7 +3,7 @@ from typing import Optional
 import pandas as pd
 
 
-def compute_consecutive_sequences(
+def extract_consecutive_sequences(
     serie: pd.Series, minimum_duration: Optional[int] = None
 ) -> pd.DataFrame:
     """Computes the sequences of consecutive values in the serie.
@@ -34,7 +34,7 @@ def compute_consecutive_sequences(
         | 6 | 0 |
         ```
 
-        Then, this function will `return compute_consecutive_sequences(serie)`
+        Then, the function `extract_consecutive_sequences(serie)` will return
         ```
         | index | beginning | ending | output_col | length |
         |---:|---:|---:|---:|---:|
@@ -57,7 +57,7 @@ def compute_consecutive_sequences(
     sequences["length"] = sequences["ending"] - sequences["beginning"] + 1
 
     if minimum_duration is not None:
-        whitelisted_sequences = sequences[sequences["length"] >= minimum_duration]
+        whitelisted_sequences = sequences[sequences["length"] > minimum_duration]
         whitelisted_sequences["ending"] = whitelisted_sequences.shift(-1)["beginning"]
         whitelisted_sequences["ending"].iloc[-1] = len(serie)
         whitelisted_sequences["ending"] = whitelisted_sequences["ending"].astype(int)
@@ -135,6 +135,6 @@ def clean_on_length(serie: pd.Series, minimum_duration: int = 2 * 60) -> pd.Seri
         serie.iloc[row["beginning"] : row["ending"]] = row["output_col"]
         return row
 
-    sequences = compute_consecutive_sequences(serie, minimum_duration=minimum_duration)
+    sequences = extract_consecutive_sequences(serie, minimum_duration=minimum_duration)
     sequences.apply(update_df_cl, axis=1)
     return serie
