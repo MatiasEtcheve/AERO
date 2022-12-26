@@ -110,7 +110,7 @@ def column_check(
 
 
 def duration_check(df: pd.DataFrame, error="raise") -> bool:
-    """Checks if the DataFrame is long enough (at least 2 000s = 33min) and the max altitude is high enough (at least 2 000ft = 610m).
+    """Checks if the DataFrame is long enough (at least 2 000s = 33min) or the max altitude is high enough (at least 2 000ft = 610m).
 
     Args:
         df (pd.DataFrame): DataFrame to check
@@ -136,7 +136,7 @@ def duration_check(df: pd.DataFrame, error="raise") -> bool:
 def health_check(ds: Opset):
     """Does a complete health check on the DataFrames of the dataset `ds`. This health check is composed of
         * iteration check: some dataframe in the dataset can't be iterated over
-        * timeframe check: check if the DataFrame index are continous
+        * timeframe check: check if the DataFrame index are continuous
         * nan check: check if the DataFrame contains any nan values
         * column check: check if all the DataFrames contain the columns of the first DataFrame (which is supposed to be healthy)
         * duration check: check if the DataFrame is long enough
@@ -183,3 +183,6 @@ def remove_problematic_records(ds: Opset):
     set_problematic_records = set(sum(dict_problematic_records.values(), []))
     for problematic_record in set_problematic_records:
         ds.records.remove("/" + problematic_record)
+
+if __name__ == "main":
+    print("maqueu")
