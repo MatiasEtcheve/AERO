@@ -33,6 +33,8 @@ Windows Subsytem for Linux WSL2.
 This bug is not fixed, and I will open an issue on ipywidget. 
 Currently, it looks like the version `ipywidgets==7.7.2` works the best.
 
+![](troubles_ipwidgets.png "Typical problem obtained on my setup")
+
 ## Usefulness of the files
 
 This repository is quite simple:
