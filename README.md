@@ -30,8 +30,9 @@ I have had a lot of problems when working on this project.
 The main problem was dealing with Plotly widgets. 
 While Plotly offers a nice interactive views, the widgets don't work well / or at all when using 
 Windows Subsytem for Linux WSL2.
+
 This bug is not fixed, and I will open an issue on ipywidget. 
-Currently, it looks like the version `ipywidgets==7.7.2` works the best.
+Currently, it looks like the version `ipywidgets==7.7.2` works the best. Below is the bug I obtained in most cases.
 
 ![](troubles_ipwidgets.png "Typical problem obtained on my setup")
 
