@@ -2,6 +2,7 @@
 **/*.h5
 
 # ignore the file systems
-/.idea
-/.ipynb_checkpoints
-**/__pycache__
+.idea
+.ipynb_checkpoints/
+__pycache__
+.python-version
